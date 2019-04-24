@@ -1,6 +1,7 @@
 import sqlite3
 from sqlite3 import Error
 
+
 def create_db(db_file='db/users.db'):
     """ create a database connection to the SQLite database
         specified by the db_file
@@ -12,7 +13,7 @@ def create_db(db_file='db/users.db'):
         return conn
     except Error as e:
         print(e)
- 
+
     return None
 
 
@@ -23,7 +24,8 @@ def create_table(conn, db_name):
             '''
             CREATE TABLE users
             (
-                user TEXT PRIMARY KEY NOT NULL,
+                userid INTEGER PRIMARY KEY AUTOINCREMENT,
+                user TEXT NOT NULL,
                 password VARCHAR(32) NOT NULL
             );
             '''
@@ -36,7 +38,8 @@ def create_table(conn, db_name):
 def insert_user(conn, username, password):
     try:
         c = conn.cursor()
-        q = "INSERT INTO users (user,password) VALUES ('{}','{}')".format(username, password)
+        q = "INSERT INTO users (user,password) VALUES ('{}','{}')".format(
+            username, password)
         print(q)
         c.execute(q)
         print('User {} added!'.format(username))
@@ -49,16 +52,16 @@ def insert_user(conn, username, password):
 def read_entry():
     u = input('Enter a username: ')
     p = input('Enter a password: ')
-    return (u,p)
+    return (u, p)
+
 
 if __name__ == '__main__':
     database = 'db/users.db'
     conn = create_db(database)
     create_table(conn, 'users')
     # insert_user(conn, 'user', 'password')
-    u,p = read_entry()
+    u, p = read_entry()
     insert_user(conn, u, p)
-
 
     rows = conn.cursor().execute('SELECT * from users').fetchall()
     for r in rows:

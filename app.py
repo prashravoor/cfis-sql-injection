@@ -10,7 +10,7 @@ if not conn:
 
 while True:
     level = input(
-"""
+        """
 Select Security Level: 
 0 - No Security
 1 - Blacklist Approach
@@ -28,24 +28,39 @@ Choice: """)
     if level >= 4:
         break
 
-    u = input('Enter username to login: ')
-    p = input('Password: ')
+    op = int(input('1 - Login\n2 - Query User\nChoice: '))
+
+    if op == 1:
+        u = input('Enter username to login: ')
+        p = input('Password: ')
+    else:
+        u = input('Enter userid to query: ')
 
     r = None
     if level == 0:
-        r = login.login(conn, u, p)
+        if op == 1:
+            r = login.login(conn, u, p)
+        else:
+            r = login.query_user_info(conn, u)
     elif level == 1:
-        r = login.black_list_login(conn, u, p)
+        if op == 1:
+            r = login.black_list_login(conn, u, p)
+        else:
+            r = login.black_list_query_user_info(conn, u)
     elif level == 2:
-        r = login.white_list_login(conn, u, p)
+        if op == 1:
+            r = login.white_list_login(conn, u, p)
+        else:
+            r = login.white_list_query_info(conn, u)
     else:
-        r = login.parameterized_query(conn, u, p)
-    
+        if op == 1:
+            r = login.parameterized_query(conn, u, p)
+        else:
+            r = login.parameterized_query_user(conn, u)
+
     if not r:
-        print('Login Failed\n\n')
+        print('Operation Failed\n\n')
     else:
-        print('User \'{}\' logged in'.format(u))
-    
+        print('Operation succeeded for user \'{}\''.format(u))
+
 conn.close()
-
-
