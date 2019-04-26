@@ -6,20 +6,22 @@ import re
 
 def login(conn, username, password):
     c = conn.cursor()
+
     q = "SELECT * FROM users where user = '{}' and password = '{}'".format(
         username, password)
-    # print(q)
     c.execute(q)
+
     result = c.fetchall()
+
     if len(result) == 0:
         return None
+
     for r in result:
         print(r)
     return 'Success'
 
 
 black_list_re = "['\";]"  # Single quote or double quote
-escaped_string = "''"  # Escape with additional '
 pattern = re.compile(black_list_re)
 
 blacklist_words = ['select', 'SELECT', 'WHERE', 'UNION', 'union']
@@ -35,7 +37,7 @@ def black_list_login(conn, username, password):
         return None
 
     if pattern.search(password):
-        print('Invliad characters in password!')
+        print('Invalid characters in password!')
         return None
 
     for word in blacklist_words:
@@ -94,8 +96,19 @@ def white_list_login(conn, username, password):
     return login(conn, username, password)
 
 
+def is_number(s):
+    try:
+        int(s)
+    except:
+        try:
+            int(s, 16)
+        except:
+            return False
+    return True
+
+
 def white_list_query_info(conn, userid):
-    if not str(userid).isnumeric():
+    if not is_number(userid):
         print('Invalid number entered for userid!')
         return None
 
